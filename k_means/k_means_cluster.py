@@ -22,7 +22,7 @@ def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature
 
     ### plot each cluster with a different color--add more colors for
     ### drawing more than five clusters
-    colors = ["b", "c", "k", "m", "g"]
+    colors = ["b", "r", "y", "m", "g"]
     for ii, pp in enumerate(pred):
         plt.scatter(features[ii][0], features[ii][1], color = colors[pred[ii]])
 
@@ -43,15 +43,24 @@ data_dict = pickle.load( open("../final_project/final_project_dataset.pkl", "r")
 ### there's an outlier--remove it! 
 data_dict.pop("TOTAL", 0)
 
+# print(data_dict)
+unsorted = []
+for k, v in data_dict.iteritems():
+    unsorted.append(v['salary'])
+sortList = sorted(unsorted)
+print(sortList)
 
 ### the input features we want to use 
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
+feature_3 = "total_payments"
 poi  = "poi"
 features_list = [poi, feature_1, feature_2]
 data = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data )
+
+print(finance_features)
 
 
 ### in the "clustering with 3 features" part of the mini-project,
@@ -64,6 +73,11 @@ plt.show()
 
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
+from sklearn.cluster import KMeans
+clf = KMeans(n_clusters=2, n_init=10, max_iter=300)
+clf.fit(finance_features)
+pred = clf.predict(finance_features)
+print('PRED', pred)
 
 
 
